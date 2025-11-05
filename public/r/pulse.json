@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pulse",
+  "type": "registry:ui",
+  "title": "Pulse",
+  "description": "A simple pulse component",
+  "files": [
+    {
+      "path": "registry/8starlabs-ui/blocks/pulse.tsx",
+      "content": "import React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\ninterface StatusIndicatorProps {\n  status?: \"success\" | \"warning\" | \"error\";\n  label?: string;\n}\n\nconst StatusIndicator = ({\n  status = \"success\",\n  label\n}: StatusIndicatorProps) => {\n  const colorMap = {\n    success: \"bg-green-500\",\n    warning: \"bg-yellow-500\",\n    error: \"bg-red-500\"\n  }[status];\n\n  return (\n    <div className=\"flex items-center gap-2\">\n      <span className=\"relative flex h-3 w-3\">\n        <span\n          className={cn(\n            \"absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping\",\n            colorMap\n          )}\n        />\n        <span\n          className={cn(\"relative inline-flex rounded-full h-3 w-3\", colorMap)}\n        />\n      </span>\n      {label && <span className=\"text-sm text-muted-foreground\">{label}</span>}\n    </div>\n  );\n};\n\nexport default StatusIndicator;\n",
+      "type": "registry:ui"
+    }
+  ]
+}

@@ -1,23 +1,51 @@
-# registry-template
+# 8starlabs UI
 
-You can use the `shadcn` CLI to run your own component registry. Running your own
-component registry allows you to distribute your custom components, hooks, pages, and
-other files to any React project.
+[8StarLabs UI](https://ui.8starlabs.com) is a component library built on top of shadcn/ui to help you build modern, interactive, and unique interfaces faster.
 
-> [!IMPORTANT]  
-> This template uses Tailwind v4. For Tailwind v3, see [registry-template-v3](https://github.com/shadcn-ui/registry-template-v3).
+## Overview
 
-## Getting Started
+8starlabs UI provides pre-built, reusable React components specifically designed for dashboards, developer tools, and interactive applications, including:
 
-This is a template for creating a custom registry using Next.js.
+- Status indicators (pulsing system dots, activity signals)
+- Transport badges (MRT, bus, and other transit symbols)
+- Developer banners (CLI banners, dev alerts, labels)
 
-- The template uses a `registry.json` file to define components and their files.
-- The `shadcn build` command is used to build the registry.
-- The registry items are served as static files under `public/r/[name].json`.
-- The template also includes a route handler for serving registry items.
-- Every registry item are compatible with the `shadcn` CLI.
-- We have also added v0 integration using the `Open in v0` api.
+The library integrates seamlessly with Next.js projects using shadcn/ui and provides a simple CLI for adding components to your project.
 
-## Documentation
+## Installation
 
-Visit the [shadcn documentation](https://ui.shadcn.com/docs/registry) to view the full documentation.
+```bash
+npx shadcn@latest add https://ui.elevenlabs.io/r/transport-badge.json
+```
+
+All available components can be found [here](https://ui.8starlabs.com/docs/components).
+
+## Prerequisites
+
+Before using 8starlabs UI, ensure your Next.js project meets these requirements:
+
+- Node.js 18 or later
+- shadcn/ui initialized in your project `npx shadcn@latest init`
+- Tailwind CSS configured
+
+## Contributing
+
+We welcome contributions to 8starlabs UI!
+
+1. Clone the repository
+2. Create a new branch
+3. Make your changes to the components in the registry
+4. Open a Pull Request to the main branch
+
+Please read the [contributing guide](/CONTRIBUTING.md) for more details.
+
+## License
+
+Licensed under the [MIT license](https://github.com/elevenlabs/ui/blob/main/LICENSE.md).
+
+Engineered by [8StarLabs](https://8starlabs.com).
+
+## Contact
+
+- Tham Kei Lok (Software Engineer) - [LinkedIn](https://www.linkedin.com/in/keiloktql/)
+- Wang Jia Hua (Documentation Engineer) - [LinkedIn](https://www.linkedin.com/in/jiahua-wang-74ewfb/)
