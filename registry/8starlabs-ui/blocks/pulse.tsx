@@ -1,35 +1,27 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 
 interface StatusIndicatorProps {
-  status?: "success" | "warning" | "error";
+  active: boolean;
   label?: string;
 }
 
-const StatusIndicator = ({
-  status = "success",
+const StatusIndicator: React.FC<StatusIndicatorProps> = ({
+  active = false,
   label
-}: StatusIndicatorProps) => {
-  const colorMap = {
-    success: "bg-green-500",
-    warning: "bg-yellow-500",
-    error: "bg-red-500"
-  }[status];
-
+}) => {
   return (
     <div className="flex items-center gap-2">
-      <span className="relative flex h-3 w-3">
+      <div className="relative flex items-center">
+        {active && (
+          <span className="absolute inline-flex h-3 w-3 rounded-full bg-green-400 opacity-75 animate-ping" />
+        )}
         <span
-          className={cn(
-            "absolute inline-flex h-full w-full rounded-full opacity-50 animate-ping",
-            colorMap
-          )}
+          className={`relative inline-flex h-3 w-3 rounded-full ${
+            active ? "bg-green-500" : "bg-slate-700"
+          }`}
         />
-        <span
-          className={cn("relative inline-flex rounded-full h-3 w-3", colorMap)}
-        />
-      </span>
-      {label && <span className="text-sm text-muted-foreground">{label}</span>}
+      </div>
+      {label && <p className="text-sm">{label}</p>}
     </div>
   );
 };

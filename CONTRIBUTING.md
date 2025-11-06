@@ -12,13 +12,25 @@ This repository is a monorepo.
 
 ## Getting Started
 
-1. **Clone on your local machine**
+1. **Fork the repository**
+   Click “Fork” on the top right of the main repo
+   to create a copy under your own GitHub account.
+
+2. **Clone on your local machine**
 
    ```bash
-   git clone https://github.com/elevenlabs/ui.git
+   git clone https://github.com/<your-username>/ui.git
+   cd ui
    ```
 
-2. **Install Dependencies**
+3. Add the upstream remote
+   This allows you to sync your fork with the original repo.
+
+   ```bash
+   git remote add upstream https://github.com/8starlabs/ui.git
+   ```
+
+4. **Install Dependencies**
    ```bash
    npm install
    ```
@@ -39,11 +51,39 @@ This repository is a monorepo.
    - Add proper documentation and types
 
 3. **Component Guidelines**
+
    - Keep components modular and reusable
    - Include proper TypeScript types
    - Follow accessibility best practices
    - Add necessary comments for complex logic
    - Test your components thoroughly
+
+4. **Commit Guidelines**
+   We follow conventional commit messages:
+
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation changes
+- `refactor:` - Code refactoring
+- `chore:` - All other tasks
+
+Example: `git commit -m 'feat: add new Button variant'`
+
+5. **Push your branch**
+
+   ```bash
+   git push origin username/your-feature-name
+   ```
+
+6. **Open a Pull Request (PR)**
+   Go to your fork on GitHub and click “Compare & pull request”.
+
+Please include:
+
+- A clear title and description
+- Screenshots or GIFs for UI changes
+- Any related issue links
+- The reason or context behind the change
 
 ## Project Structure
 
@@ -52,18 +92,6 @@ registry/8starlabs-ui/
 ├── blocks/          # Components to be added to registry
 └── ui/              # Components that are installed via `npx shadcn@latest` commmand
 ```
-
-## Commit Guidelines
-
-We follow conventional commit messages:
-
-- `feat:` - New features
-- `fix:` - Bug fixes
-- `docs:` - Documentation changes
-- `refactor:` - Code refactoring
-- `chore:` - All other tasks
-
-Example: `feat: add new Button variant`
 
 ## Pull Request Process
 
