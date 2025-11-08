@@ -24,13 +24,15 @@ export default function Home() {
           Coming soon!
         </Badge>
         <p
-          className={`ml-2.5 lg:ml-0 ${goldman.className} text-black dark:text-white text-5xl font-bold flex items-center`}
+          className={`ml-2.5 lg:ml-0 ${goldman.className} text-black dark:text-white text-3xl sm:text-4xl md:text-5xl font-bold flex items-center`}
         >
           <Image
             src={"/images/8sl_logo_lite_light_transparent.png"}
             alt="StarLabs"
-            width={40}
-            height={40}
+            width={32}
+            height={32}
+            className="w-[20px] h-[20px] sm:w-[36px] sm:h-[36px] md:w-[40px] md:h-[40px]"
+            priority
           />
           StarLabs UI
         </p>
