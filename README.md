@@ -30,14 +30,7 @@ Before using 8starlabs UI, ensure your Next.js project meets these requirements:
 
 ## Contributing
 
-We welcome contributions to 8starlabs UI!
-
-1. Clone the repository
-2. Create a new branch
-3. Make your changes to the components in the registry
-4. Open a Pull Request to the main branch
-
-Please read the [contributing guide](/CONTRIBUTING.md) for more details.
+We welcome contributions to 8starlabs UI! Please read the [contributing guide](/CONTRIBUTING.md) for more details. Love 8StarLabsUI? Give us a ⭐ on GitHub!
 
 ## License
 
