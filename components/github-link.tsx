@@ -1,8 +1,10 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
-import { api, siteConfig } from "@/lib/config";
+import { siteConfig, api } from "@/lib/config";
 import { Button } from "@/registry/8starlabs-ui/ui/button";
-import { Suspense } from "react";
 import { Skeleton } from "@/registry/8starlabs-ui/ui/skeleton";
 
 export function GitHubLink() {
@@ -10,25 +12,44 @@ export function GitHubLink() {
     <Button asChild size="sm" variant="ghost" className="h-8 shadow-none">
       <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
         <Icons.gitHub />
-        <Suspense fallback={<Skeleton className="h-4 w-2" />}>
-          <StarsCount />
-        </Suspense>
+        <StarsCountClient />
       </Link>
     </Button>
   );
 }
 
-export async function StarsCount() {
-  const data = await fetch(api.github.direct, {
-    next: { revalidate: 86400 } // Cache for 1 day (86400 seconds)
-  });
-  const json = await data.json();
+function StarsCountClient() {
+  const [count, setCount] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const res = await fetch(api.github.direct);
+        if (!res.ok) throw new Error("Failed to fetch");
+        const json = await res.json();
+        if (mounted) setCount(json.stargazers_count ?? null);
+      } catch (err) {
+        console.error("Stars fetch error:", err);
+        if (mounted) setCount(null);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) return <Skeleton className="h-4 w-8" />;
+  if (count === null)
+    return <span className="text-muted-foreground text-xs">—</span>;
 
   return (
     <span className="text-muted-foreground w-2 text-xs tabular-nums">
-      {json.stargazers_count >= 1000
-        ? `${(json.stargazers_count / 1000).toFixed(1)}k`
-        : json.stargazers_count.toLocaleString()}
+      {count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count.toLocaleString()}
     </span>
   );
 }
