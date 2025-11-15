@@ -94,7 +94,7 @@ export default function RootLayout({
         <meta name="theme-color" content={META_THEME_COLORS.light} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]`}
+        className={`${geistSans.variable} ${geistMono.variable} group/body overscroll-none antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <FaviconWrapper />

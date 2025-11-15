@@ -104,8 +104,7 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
 
   return (
     <Popover>
-      <div className="bg-secondary group/buttons relative flex rounded-lg *:[[data-slot=button]]:focus-visible:relative *:[[data-slot=button]]:focus-visible:z-10">
-        <PopoverAnchor />
+      <div className="bg-secondary group/buttons relative flex rounded-lg *:data-[slot=button]:focus-visible:relative *:data-[slot=button]:focus-visible:z-10">
         <Button
           variant="secondary"
           size="sm"
@@ -136,7 +135,9 @@ export function DocsCopyPage({ page, url }: { page: string; url: string }) {
         </PopoverTrigger>
         <PopoverContent
           className="bg-background/70 dark:bg-background/60 w-52 !origin-center rounded-lg p-1 shadow-sm backdrop-blur-sm"
-          align="start"
+          side="top"
+          align="end"
+          sideOffset={8}
         >
           {Object.entries(menuItems).map(([key, value]) => (
             <Button

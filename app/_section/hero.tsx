@@ -20,12 +20,12 @@ const Hero = ({ className }: HeroProps) => {
 
   const logo = mounted ? (
     effectiveTheme === "dark" ? (
-      <Icons.eslUiLogoDarkPrimary className="w-auto h-16" />
+      <Icons.eslUiLogoDarkPrimary className="w-auto h-8 md:h-16" />
     ) : (
-      <Icons.eslUiLogoLightPrimary className="w-auto h-16" />
+      <Icons.eslUiLogoLightPrimary className="w-auto h-8 md:h-16" />
     )
   ) : (
-    <Icons.eslUiLogoLightPrimary className="w-auto h-16" />
+    <Icons.eslUiLogoLightPrimary className="w-auto h-8 md:h-16" />
   );
 
   return (
