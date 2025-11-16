@@ -1,7 +1,6 @@
 ---
 title: Status Indicator
 description: A vertically stacked set of interactive headings that each reveal a section of content.
-component: true
 ---
 
 <ComponentPreview
@@ -23,7 +22,7 @@ component: true
 <TabsContent value="cli">
 
 ```bash
-npx shadcn@latest add status-indicator
+npx shadcn@latest add @8starlabs-ui/status-indicator
 ```
 
 </TabsContent>
@@ -46,5 +45,8 @@ import StatusIndicator from "@/components/ui/status-indicator";
 ```
 
 ```tsx showLineNumbers
-<StatusIndicator />
+<StatusIndicator state="active" label="All systems operational" />
+<StatusIndicator state="down" label="Systems down" />
+<StatusIndicator state="idle" label="Systems idle" />
+<StatusIndicator state="fixing" label="Diagnosing issue, fixing" />
 ```
