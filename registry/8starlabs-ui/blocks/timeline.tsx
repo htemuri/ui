@@ -1,24 +1,13 @@
-import React, {
-  Children,
-  cloneElement,
-  isValidElement,
-  ReactElement
-} from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { clsx } from "clsx";
-import {
-  TimelineItemData,
-  TimelineItemProps,
-  TimelineProps,
-  TimelineItemCardProps
-} from "./timelineTypes";
+import { TimelineItemData, TimelineProps } from "./timelineTypes";
+import { TimelineClient, TimelineItem } from "./timeline-client";
 
 // Sample data structure for the timeline items (now using the defined type)
 const timelineData: TimelineItemData[] = [
   {
     id: 1,
     title: "Project Start",
-    description: "Initial planning and requirement gathering.",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur consequuntur esse eum molestiae assumenda reprehenderit ullam sunt unde aspernatur totam quaerat iure sit maxime, laboriosam quod modi commodi ipsa at!",
     date: new Date("2023-01-01")
   },
   {
@@ -48,132 +37,80 @@ const timelineData: TimelineItemData[] = [
   }
 ];
 
-function TimelineItemCard({
-  isAbove,
-  content,
-  dateDisplayFormat
-}: TimelineItemCardProps) {
-  let dateStr = "";
-  switch (dateDisplayFormat) {
-    case "day":
-      let day = content.date.getDate().toString().padStart(2, "0");
-      let month = content.date.toLocaleString("default", { month: "short" });
-      let year = content.date.getFullYear();
-      dateStr = `${day} ${month} ${year}`;
-      break;
-    case "month":
-      dateStr = content.date.toLocaleString("default", {
-        month: "short",
-        year: "numeric"
-      });
-      break;
-    case "year":
-      dateStr = content.date.getFullYear().toString();
-      break;
-  }
-
-  return (
-    <div
-      className={clsx(
-        "absolute min-w-60 border-2 p-2 rounded-sm bg-white shadow-sm gap-2 flex flex-col items-start",
-        isAbove ? "bottom-full mb-2" : "top-full mt-2",
-        content.highlight ? "border-red-500" : "border-gray-600"
-      )}
-    >
-      <div className="text-sm text-gray-500">{dateStr}</div>
-      <div className="font-semibold">{content.title}</div>
-      <div className="text-sm">{content.description}</div>
-    </div>
-  );
-}
-
-function TimelineItem({
-  index,
-  content,
-  dateDisplayFormat,
-  alternating,
-  circleSize,
-  circleColor,
-  circleBorderColor,
-  circleThickness
-}: TimelineItemProps) {
-  const isAbove = alternating ? index! % 2 === 0 : true;
-
-  // Horizontal Layout
-  return (
-    <div className={`relative flex flex-col items-center`}>
-      <TimelineItemCard
-        isAbove={isAbove}
-        content={content}
-        dateDisplayFormat={dateDisplayFormat!}
-      />
-      <div
-        className="rounded-full"
-        style={{
-          width: `${circleSize}px`,
-          height: `${circleSize}px`,
-          backgroundColor: circleColor,
-          borderColor: content.highlight ? "red" : circleBorderColor,
-          borderWidth: `${circleThickness}px`
-        }}
-      />
-    </div>
-  );
-}
-
-function Timeline({
+export function Timeline({
   children,
   title,
+  titleSize = 24,
+  titleColor = "#000000",
   dateDisplayFormat = "day",
   alternating = false,
+  alignment = "top",
   lineColor = "#9CA3AF",
   lineThickness = 5,
   circleSize = 24,
   circleColor = "#FFFFFF",
   circleBorderColor = "#9CA3AF",
-  circleThickness = 5
+  circleThickness = 5,
+  itemFillColor = "#FFFFFF",
+  itemBorderThickness = 2,
+  itemBorderColor = "#9CA3AF",
+  itemTextAlignment = "left",
+  itemSpacing = 240,
+  itemWidth = 220,
+  shadow = false
 }: TimelineProps) {
   return (
-    <div className="max-w-6xl mx-auto font-sans">
-      <div className="text-2xl font-bold text-center text-gray-800 mb-40">
-        {title}
-      </div>
-      <div
-        className={`flex flex-row justify-between items-center gap-40 px-20 rounded`}
-        style={{
-          height: `${lineThickness}px`,
-          backgroundColor: lineColor
-        }}
-      >
-        {children.map((child, index) =>
-          cloneElement(child, {
-            index,
-            dateDisplayFormat,
-            alternating,
-            circleSize,
-            circleColor,
-            circleBorderColor,
-            circleThickness
-          })
-        )}
-      </div>
-    </div>
+    <TimelineClient
+      config={{
+        title,
+        titleSize,
+        titleColor,
+        dateDisplayFormat,
+        alternating,
+        alignment,
+        lineColor,
+        lineThickness,
+        circleSize,
+        circleColor,
+        circleBorderColor,
+        circleThickness,
+        itemFillColor,
+        itemBorderThickness,
+        itemBorderColor,
+        itemTextAlignment,
+        itemSpacing,
+        itemWidth,
+        shadow
+      }}
+    >
+      {children}
+    </TimelineClient>
   );
 }
 
-function TimelineDemo() {
+export default function TimelineDemo() {
   return (
-    <div className="flex justify-center items-center w-screen h-screen bg-white">
+    <div className="flex justify-center items-center w-screen h-screen">
       <Timeline
         title="Project Timeline"
+        titleSize={40}
+        titleColor="#FF5733"
         dateDisplayFormat="day"
-        alternating={true}
-        // lineColor="#EB34D2"
-        // lineThickness={9}
-        // circleSize={40}
-        // circleThickness={10}
-        // circleColor="lightGreen"
-        // circleBorderColor="#3492eb"
+        alternating={false}
+        alignment="bottom"
+        lineColor="#EB34D2"
+        lineThickness={9}
+        circleSize={40}
+        circleThickness={10}
+        circleColor="lightGreen"
+        circleBorderColor="#3492eb"
+        itemFillColor="#ffffff"
+        itemBorderThickness={2}
+        itemBorderColor="#440000"
+        itemTextAlignment="left"
+        itemSpacing={220}
+        itemWidth={240}
+        shadow={false}
       >
         {timelineData.map((item) => (
           <TimelineItem key={item.id} content={item} />
@@ -182,5 +119,3 @@ function TimelineDemo() {
     </div>
   );
 }
-
-export default TimelineDemo;
