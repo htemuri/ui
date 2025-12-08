@@ -1,9 +1,15 @@
+"use client";
+
 import {
   Children,
   cloneElement,
   CSSProperties,
   HTMLAttributes,
-  ReactElement
+  ReactElement,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
 } from "react";
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
@@ -162,6 +168,33 @@ interface TimelineProps
   orientation: "horizontal" | "vertical";
 }
 
+function useHorizontalScroll() {
+  const elRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = elRef.current;
+    if (el) {
+      const onWheel = (e: WheelEvent) => {
+        if (e.deltaY === 0) return;
+        // Prevent page scroll only if we can still scroll the element
+        if (
+          (e.deltaY > 0 && el.scrollLeft + el.clientWidth < el.scrollWidth) ||
+          (e.deltaY < 0 && el.scrollLeft > 0)
+        ) {
+          e.preventDefault();
+          el.scrollTo({
+            left: el.scrollLeft + e.deltaY,
+            behavior: "smooth" // Optional: makes it smoother but slower
+          });
+        }
+      };
+      el.addEventListener("wheel", onWheel);
+      return () => el.removeEventListener("wheel", onWheel);
+    }
+  }, []);
+  return elRef;
+}
+
 export function Timeline({
   children,
   className,
@@ -176,25 +209,96 @@ export function Timeline({
 }: TimelineProps) {
   const isVertical = orientation === "vertical";
 
-  const horizSpillover = Math.max(0, (horizItemWidth - horizItemSpacing) / 2);
-  const safePadding = horizSpillover + 16;
+  const safePadding = Math.max(0, (horizItemWidth - horizItemSpacing) / 2);
+
+  const scrollRef = useHorizontalScroll();
+
+  const [verticalPadding, setVerticalPadding] = useState({ top: 0, bottom: 0 });
+  const listRef = useRef<HTMLUListElement>(null);
+
+  useLayoutEffect(() => {
+    if (!isVertical || !listRef.current) {
+      setVerticalPadding({ top: 0, bottom: 0 });
+      return;
+    }
+
+    const computePadding = () => {
+      const list = listRef.current;
+      if (!list) return;
+
+      // Find all cards
+      const cards = list.querySelectorAll('[data-timeline-card="true"]');
+      if (cards.length === 0) return;
+
+      const firstCard = cards[0];
+      const lastCard = cards[cards.length - 1];
+
+      // Calculate heights
+      const firstHeight = firstCard.getBoundingClientRect().height;
+      const lastHeight = lastCard.getBoundingClientRect().height;
+
+      // Formula: (CardHeight - Spacing) / 2
+      // We use Math.max(0, ...) because if the card is smaller than spacing,
+      // we don't want negative padding.
+      const top = Math.max(0, (firstHeight - vertItemSpacing) / 2);
+      const bottom = Math.max(0, (lastHeight - vertItemSpacing) / 2);
+
+      setVerticalPadding({ top, bottom });
+    };
+
+    // Run initially
+    computePadding();
+
+    // Re-run if window resizes (content wrapping changes height)
+    const observer = new ResizeObserver(() => computePadding());
+    observer.observe(listRef.current);
+
+    return () => observer.disconnect();
+  }, [isVertical, vertItemSpacing, children]);
 
   return (
-    <div id="timeline-container" className={cn(className)} {...props}>
+    <div
+      id="timeline-container"
+      className={cn(
+        "flex h-full w-full p-4",
+        isVertical ? "flex-col" : "flex-row overflow-x-auto",
+        "snap-mandatory",
+        isVertical ? "snap-y" : "snap-x",
+        "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+        className
+      )}
+      ref={isVertical ? null : scrollRef}
+      {...props}
+    >
       <ul
         id="timeline-grid"
         className={timelineLayoutVariants({ orientation })}
         style={
           isVertical
             ? {
-                gridAutoRows: `${vertItemSpacing}px` // Vertical Gap
+                gridAutoRows: `${vertItemSpacing}px`,
+                // DYNAMIC GRID COLUMNS
+                gridTemplateColumns: alternating
+                  ? "1fr 2rem 1fr" // Standard centered
+                  : alignment === "top/left" // "Content Left"
+                    ? "1fr 2rem" // remove right column
+                    : "2rem 1fr", // remove left column (Line First)
+                paddingTop: `${verticalPadding.top}px`,
+                paddingBottom: `${verticalPadding.bottom}px`
               }
             : {
-                gridAutoColumns: `${horizItemSpacing}px`, // Horizontal Spacing
-                paddingLeft: `${safePadding}px`, // Bumper padding
+                gridAutoColumns: `${horizItemSpacing}px`,
+                // DYNAMIC GRID ROWS
+                gridTemplateRows: alternating
+                  ? "min-content 2rem min-content"
+                  : alignment === "top/left" // "Content Top"
+                    ? "min-content 2rem"
+                    : "2rem min-content",
+                paddingLeft: `${safePadding}px`,
                 paddingRight: `${safePadding}px`
               }
         }
+        ref={listRef}
       >
         {Children.map(children, (child, index) =>
           cloneElement(child as ReactElement<any>, {
@@ -239,16 +343,48 @@ export function TimelineItem({
       ? "before"
       : "after";
 
-  // Dynamic Grid Positioning
-  const gridStyle: CSSProperties = isVertical
-    ? {
-        gridColumn: side === "before" ? 1 : 3,
-        gridRow: index + 1
+  let gridStyle: CSSProperties = {};
+  let lineStyle: CSSProperties = {};
+
+  if (isVertical) {
+    // VERTICAL LOGIC
+    if (alternating) {
+      // 3 Columns: [Content] [Line] [Content]
+      gridStyle = { gridColumn: side === "before" ? 1 : 3, gridRow: index + 1 };
+      lineStyle = { gridColumn: 2, gridRow: index + 1, height: "100%" };
+    } else {
+      // 2 Columns
+      if (side === "before") {
+        // [Content] [Line]
+        gridStyle = { gridColumn: 1, gridRow: index + 1 };
+        lineStyle = { gridColumn: 2, gridRow: index + 1, height: "100%" };
+      } else {
+        // [Line] [Content]
+        gridStyle = { gridColumn: 2, gridRow: index + 1 };
+        lineStyle = { gridColumn: 1, gridRow: index + 1, height: "100%" };
       }
-    : {
-        gridColumn: index + 1,
-        gridRow: side === "before" ? 1 : 3
-      };
+    }
+  } else {
+    // HORIZONTAL LOGIC
+    if (alternating) {
+      // 3 Rows: [Content] [Line] [Content]
+      gridStyle = { gridColumn: index + 1, gridRow: side === "before" ? 1 : 3 };
+      lineStyle = { gridColumn: index + 1, gridRow: 2, width: "100%" };
+    } else {
+      // 2 Rows
+      if (side === "before") {
+        // [Content]
+        // [Line]
+        gridStyle = { gridColumn: index + 1, gridRow: 1 };
+        lineStyle = { gridColumn: index + 1, gridRow: 2, width: "100%" };
+      } else {
+        // [Line]
+        // [Content]
+        gridStyle = { gridColumn: index + 1, gridRow: 2 };
+        lineStyle = { gridColumn: index + 1, gridRow: 1, width: "100%" };
+      }
+    }
+  }
 
   const cardStyle: CSSProperties = isVertical
     ? {
@@ -266,6 +402,7 @@ export function TimelineItem({
         id={`timeline-item-${index}-container`}
         className={cn(
           timelineItemContainerVariants({ orientation, side }),
+          "snap-center",
           className
         )}
         style={gridStyle}
@@ -275,6 +412,7 @@ export function TimelineItem({
           id={`timeline-item-${index}`}
           style={cardStyle}
           className={cn(timelineItemVariants({ variant }), "shrink-0")}
+          data-timeline-card={true}
         >
           <span className="text-xs text-muted-foreground">
             {dateFormatter.format(date)}
@@ -289,11 +427,7 @@ export function TimelineItem({
       <li
         id={`timeline-item-${index}-middle`}
         className="relative flex items-center justify-center"
-        style={
-          isVertical
-            ? { gridColumn: 2, gridRow: index + 1, height: "100%" }
-            : { gridColumn: index + 1, gridRow: 2, width: "100%" }
-        }
+        style={lineStyle}
       >
         <div
           className={cn(
@@ -318,12 +452,20 @@ export function TimelineItem({
             "absolute",
             timelineBranchVariants({ variant }),
             isVertical
-              ? isEven
-                ? "h-px w-4 left-0"
-                : "h-px w-4 right-0"
-              : isEven
-                ? "w-px h-4 top-0"
-                : "w-px h-4 bottom-0"
+              ? alternating
+                ? isEven
+                  ? "h-px w-4 left-0"
+                  : "h-px w-4 right-0"
+                : alignment === "top/left"
+                  ? "h-px w-4 left-0"
+                  : "h-px w-4 right-0"
+              : alternating
+                ? isEven
+                  ? "w-px h-4 top-0"
+                  : "w-px h-4 bottom-0"
+                : alignment === "top/left"
+                  ? "w-px h-4 top-0"
+                  : "w-px h-4 bottom-0"
           )}
           id={`timeline-item-${index}-branch`}
         />
@@ -367,7 +509,7 @@ const timelineData: TimelineItemProps[] = [
     title:
       "Database Setup Extravaganza with Lots of Unnecessary Complexity for Testing Purposes Only",
     description:
-      "Configured databases, tables, and initial seed data for testing. This included hundreds of tables, dozens of indexes, and a complicated schema that will never be used in production. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea nostrum officiis laborum debitis error hic omnis architecto, consectetur vitae atque, temporibus, alias minus a dolore voluptate sed quam ratione placeat!",
+      "Configured databases, tables, and initial seed data for testing. This included hundreds of tables, dozens of indexes, and a complicated schema that will never be used in production.",
     date: new Date("2023-02-01"),
     variant: "destructive"
   }
@@ -375,7 +517,12 @@ const timelineData: TimelineItemProps[] = [
 
 export default function TimelineDemo() {
   return (
-    <Timeline orientation="vertical">
+    <Timeline
+      orientation="vertical"
+      alternating={true}
+      alignment="bottom/right"
+      vertItemSpacing={180}
+    >
       {timelineData.map((item, idx) => (
         <TimelineItem key={idx} {...item} />
       ))}
