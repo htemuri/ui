@@ -8,16 +8,49 @@ import {
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
+const variantStyles: Record<
+  string,
+  { dot: string; branch: string; card: string }
+> = {
+  default: {
+    dot: "border-primary bg-background",
+    branch: "bg-primary",
+    // Uses 'border-primary' to make it stand out in Dark Mode (White)
+    card: "border-primary bg-card"
+  },
+  success: {
+    dot: "border-emerald-500 bg-emerald-500",
+    branch: "bg-emerald-500",
+    card: "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20"
+  },
+  warning: {
+    dot: "border-amber-500 bg-amber-500",
+    branch: "bg-amber-500",
+    card: "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20"
+  },
+  destructive: {
+    // Renamed from 'error' to match Shadcn
+    dot: "border-destructive bg-destructive",
+    branch: "bg-destructive",
+    card: "border-destructive bg-destructive/10"
+  },
+  info: {
+    dot: "border-sky-500 bg-sky-500",
+    branch: "bg-sky-500",
+    card: "border-sky-500 bg-sky-50/50 dark:bg-sky-950/20"
+  }
+};
+
 const timelineDotVariants = cva(
   "h-4 w-4 rounded-full border-2 bg-background z-10 box-border", // Base styles
   {
     variants: {
       variant: {
-        default: "border-primary",
-        success: "border-green-500 bg-green-500",
-        warning: "border-amber-500 bg-amber-500",
-        error: "border-red-500 bg-red-500",
-        info: "border-blue-400 bg-blue-400"
+        default: variantStyles.default.dot,
+        success: variantStyles.success.dot,
+        warning: variantStyles.warning.dot,
+        destructive: variantStyles.destructive.dot,
+        info: variantStyles.info.dot
       }
     },
     defaultVariants: {
@@ -27,15 +60,15 @@ const timelineDotVariants = cva(
 );
 
 const timelineItemVariants = cva(
-  "flex flex-col border rounded-md p-4 bg-card text-card-foreground shadow-sm", // Base card styles
+  "flex flex-col border rounded-md p-4 text-card-foreground shadow-sm transition-all", // Base card styles
   {
     variants: {
       variant: {
-        default: "border-border",
-        success: "border-green-500 shadow-md",
-        warning: "border-amber-500 shadow-md",
-        error: "border-red-500 shadow-md",
-        info: "border-blue-400 shadow-md"
+        default: variantStyles.default.card,
+        success: variantStyles.success.card,
+        warning: variantStyles.warning.card,
+        destructive: variantStyles.destructive.card,
+        info: variantStyles.info.card
       }
     },
     defaultVariants: {
@@ -44,11 +77,26 @@ const timelineItemVariants = cva(
   }
 );
 
+const timelineBranchVariants = cva("", {
+  variants: {
+    variant: {
+      default: variantStyles.default.branch,
+      success: variantStyles.success.branch,
+      warning: variantStyles.warning.branch,
+      destructive: variantStyles.destructive.branch,
+      info: variantStyles.info.branch
+    }
+  },
+  defaultVariants: {
+    variant: "default"
+  }
+});
+
 const timelineLayoutVariants = cva("grid relative", {
   variants: {
     orientation: {
-      horizontal: "grid-flow-col grid-rows-[min-content_auto_min-content]",
-      vertical: "grid-cols-[1fr_auto_1fr] auto-rows-min"
+      horizontal: "grid-flow-col grid-rows-[min-content_2rem_min-content]",
+      vertical: "grid-cols-[1fr_2rem_1fr] auto-rows-min"
     }
   },
   defaultVariants: {
@@ -70,19 +118,19 @@ const timelineItemContainerVariants = cva("flex relative", {
   },
   compoundVariants: [
     // Horizontal + Top (Even)
-    { orientation: "horizontal", side: "before", class: "items-end pb-4" },
+    { orientation: "horizontal", side: "before", class: "items-end" },
     // Horizontal + Bottom (Odd)
-    { orientation: "horizontal", side: "after", class: "items-start pt-4" },
+    { orientation: "horizontal", side: "after", class: "items-start" },
     // Vertical + Left (Even)
-    { orientation: "vertical", side: "before", class: "justify-end pr-4" },
+    { orientation: "vertical", side: "before", class: "justify-end" },
     // Vertical + Right (Odd)
-    { orientation: "vertical", side: "after", class: "justify-start pl-4" }
+    { orientation: "vertical", side: "after", class: "justify-start" }
   ]
 });
 
-export interface TimelineItemProps
+interface TimelineItemProps
   extends
-    HTMLAttributes<HTMLDivElement>,
+    HTMLAttributes<HTMLLIElement>,
     VariantProps<typeof timelineItemVariants> {
   date: Date;
   title: string;
@@ -98,7 +146,7 @@ export interface TimelineItemProps
   orientation?: "horizontal" | "vertical";
 }
 
-export interface TimelineProps
+interface TimelineProps
   extends
     HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof timelineLayoutVariants> {
@@ -132,8 +180,8 @@ export function Timeline({
   const safePadding = spillover + 16;
 
   return (
-    <div className={cn("py-8", className)} {...props} id="timeline-container">
-      <div
+    <div id="timeline-container" className={cn(className)} {...props}>
+      <ul
         id="timeline-grid"
         className={timelineLayoutVariants({ orientation })}
         style={
@@ -147,7 +195,6 @@ export function Timeline({
                 paddingRight: `${safePadding}px`
               }
         }
-        {...props}
       >
         {Children.map(children, (child, index) =>
           cloneElement(child as ReactElement<any>, {
@@ -160,7 +207,7 @@ export function Timeline({
             alignment
           })
         )}
-      </div>
+      </ul>
     </div>
   );
 }
@@ -215,32 +262,31 @@ export function TimelineItem({
 
   return (
     <>
-      <div
+      <li
         id={`timeline-item-${index}-container`}
-        className={timelineItemContainerVariants({ orientation, side })}
+        className={cn(
+          timelineItemContainerVariants({ orientation, side }),
+          className
+        )}
         style={gridStyle}
+        {...props}
       >
         <div
           id={`timeline-item-${index}`}
           style={cardStyle}
-          className={cn(
-            timelineItemVariants({ variant }),
-            "shrink-0",
-            className
-          )}
-          {...props}
+          className={cn(timelineItemVariants({ variant }), "shrink-0")}
         >
           <span className="text-xs text-muted-foreground">
             {dateFormatter.format(date)}
           </span>
-          <h3 className="font-semibold leading-none mt-1">{title}</h3>
+          <h3 className="font-semibold mt-1">{title}</h3>
           {description && (
             <p className="text-sm text-muted-foreground mt-2">{description}</p>
           )}
         </div>
-      </div>
+      </li>
 
-      <div
+      <li
         id={`timeline-item-${index}-middle`}
         className="relative flex items-center justify-center"
         style={
@@ -252,18 +298,41 @@ export function TimelineItem({
         <div
           className={cn(
             "absolute bg-muted",
-            index === 0 ? "rounded-l-full" : "",
-            index === total - 1 ? "rounded-r-full" : "",
-            isVertical ? "h-full w-1 top-0" : "w-full h-1 left-0"
+            index === 0
+              ? isVertical
+                ? "rounded-t-full"
+                : "rounded-l-full"
+              : "",
+            index === total - 1
+              ? isVertical
+                ? "rounded-b-full"
+                : "rounded-r-full"
+              : "",
+            isVertical ? "h-full w-1" : "w-full h-1"
           )}
           id={`timeline-item-${index}-line`}
+        />
+
+        <div
+          className={cn(
+            "absolute",
+            timelineBranchVariants({ variant }),
+            isVertical
+              ? isEven
+                ? "h-px w-4 left-0"
+                : "h-px w-4 right-0"
+              : isEven
+                ? "w-px h-4 top-0"
+                : "w-px h-4 bottom-0"
+          )}
+          id={`timeline-item-${index}-branch`}
         />
 
         <div
           className={cn(timelineDotVariants({ variant }))}
           id={`timeline-item-${index}-dot`}
         />
-      </div>
+      </li>
     </>
   );
 }
@@ -300,7 +369,7 @@ const timelineData: TimelineItemProps[] = [
     description:
       "Configured databases, tables, and initial seed data for testing. This included hundreds of tables, dozens of indexes, and a complicated schema that will never be used in production. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea nostrum officiis laborum debitis error hic omnis architecto, consectetur vitae atque, temporibus, alias minus a dolore voluptate sed quam ratione placeat!",
     date: new Date("2023-02-01"),
-    variant: "error"
+    variant: "destructive"
   }
 ];
 
@@ -308,7 +377,7 @@ export default function TimelineDemo() {
   return (
     <div className="flex justify-center items-center w-screen h-screen">
       <Timeline
-        orientation="vertical"
+        orientation="horizontal"
         alignment="top/left"
         alternating={true}
         vertItemSpacing={150}
