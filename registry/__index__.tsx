@@ -5,6 +5,7 @@ import timeline_component from "@/registry/8starlabs-ui/blocks/timeline";
 import transport_badge_component from "@/registry/8starlabs-ui/blocks/transport-badge";
 import status_indicator_demo_component from "@/registry/8starlabs-ui/examples/status-indicator-demo";
 import timeline_demo_component from "@/registry/8starlabs-ui/examples/timeline-demo";
+import timeline_hollow_demo_component from "@/registry/8starlabs-ui/examples/timeline-hollow-demo";
 import timeline_nocards_demo_component from "@/registry/8starlabs-ui/examples/timeline-nocards-demo";
 import timeline_not_alternating_demo_component from "@/registry/8starlabs-ui/examples/timeline-not-alternating-demo";
 import timeline_vertical_demo_component from "@/registry/8starlabs-ui/examples/timeline-vertical-demo";
@@ -75,6 +76,16 @@ export const Index: Record<string, any> = {
         target: ""
       }],
       component: timeline_demo_component
+    },
+    "timeline-hollow-demo": {
+      name: "timeline-hollow-demo",
+      type: "registry:example",
+      files: [{
+        path: "registry/8starlabs-ui/examples/timeline-hollow-demo.tsx",
+        type: "registry:example",
+        target: ""
+      }],
+      component: timeline_hollow_demo_component
     },
     "timeline-nocards-demo": {
       name: "timeline-nocards-demo",

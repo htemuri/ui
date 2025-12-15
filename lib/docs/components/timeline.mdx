@@ -66,29 +66,62 @@ export function MyTimeline() {
 
 ## API Reference
 
-`<Timeline>` props
+### `<Timeline />`
 
-| Prop               | Type                           | Default        | Description                                                                                                                                                                                                             |
-| ------------------ | ------------------------------ | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `orientation`      | `"horizontal" \| "vertical"`   | `"horizontal"` | The orientation of the timeline.                                                                                                                                                                                        |
-| `alternating`      | `boolean`                      | `true`         | Whether the timeline cards alternate from one side of the line to the other. If set to `true`, `alignment` has no effect. The first card is always placed at the top left (for both horizontal and vertical timelines). |
-| `alignment`        | `"top/left" \| "bottom/right"` | `"top/left"`   | Determines which side of the line to display the cards. Only takes effect if `alternating` is `false`.                                                                                                                  |
-| `horizItemSpacing` | `number`                       | `130`          | The horizontal distance (in px) between successive timeline points on a horizontal timeline.                                                                                                                            |
-| `horizItemWidth`   | `number`                       | `220`          | The width (in px) of each card in a horizontal timeline.                                                                                                                                                                |
-| `vertItemSpacing`  | `number`                       | `130`          | The vertical distance (in px) between successive timeline points on a vertical timeline.                                                                                                                                |
-| `vertItemMaxWidth` | `number`                       | `350`          | The maximum width (in px) of each card in a vertical timeline.                                                                                                                                                          |
-| `noCards`          | `boolean`                      | `false`        | If `true`, removes the card background and border styling from all items.                                                                                                                                               |
+| Prop               | Type                           | Default        | Description                                                                                          |
+| ------------------ | ------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------- |
+| `orientation`      | `"horizontal" \| "vertical"`   | `"horizontal"` | Controls the direction of the timeline.                                                              |
+| `alternating`      | `boolean`                      | `true`         | Whether cards alternate on opposite sides of the central line. When enabled, `alignment` is ignored. |
+| `alignment`        | `"top/left" \| "bottom/right"` | `"top/left"`   | Determines which side cards appear on when `alternating` is `false`.                                 |
+| `horizItemSpacing` | `number`                       | `130`          | Horizontal distance in pixels between timeline points.                                               |
+| `horizItemWidth`   | `number`                       | `220`          | Fixed width in pixels for cards in horizontal timelines.                                             |
+| `vertItemSpacing`  | `number`                       | `130`          | Vertical distance in pixels between timeline points.                                                 |
+| `vertItemMaxWidth` | `number`                       | `350`          | Maximum width in pixels for cards in vertical timelines.                                             |
+| `noCards`          | `boolean`                      | `false`        | Removes card background, border, and padding styles.                                                 |
 
-`<TimelineItem>` props
+### `<TimelineItem />`
 
-| Prop      | Type                                                   | Description                                               |
-| --------- | ------------------------------------------------------ | --------------------------------------------------------- |
-| `variant` | `"default" \| "success" \| "destructive" \| "outline"` | (Optional) The visual style of the timeline card and dot. |
+| Prop      | Type                                                     | Description                                                     |
+| --------- | -------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `variant` | `"default" \| "secondary" \| "destructive" \| "outline"` | Visual variant applied to the card, dot, and connecting branch. |
+| `hollow`  | `boolean`                                                | `false`                                                         | Renders the timeline dot as a hollow circle instead of a solid one. |
+
+### `<TimelineItemDate />`
+
+Displays a formatted date or string. Accepts either a `Date` object or a string.
+
+### `<TimelineItemTitle />`
+
+Displays the main title of a timeline event.
+
+### `<TimelineItemDescription />`
+
+Displays supporting text for a timeline event.
 
 ## Examples
 
-{/\* <ComponentPreview name="timeline-nocards-demo" />
+### Horizontal Timeline
+
+<ComponentPreview name="timeline-demo" />
+
+### Vertical Timeline
 
 <ComponentPreview name="timeline-vertical-demo" />
 
-<ComponentPreview name="timeline-not-alternating-demo" /> */}
+### Non-alternating Layout
+
+<ComponentPreview name="timeline-not-alternating-demo" />
+
+### No Cards
+
+<ComponentPreview name="timeline-nocards-demo" />
+
+### Hollow Circles
+
+<ComponentPreview name="timeline-hollow-demo" />
+
+## Notes
+
+- Horizontal timelines support mouse wheel scrolling when content overflows.
+- Vertical timelines automatically adjust padding to center the first and last cards.
+- All components support standard HTML attributes and className overrides.

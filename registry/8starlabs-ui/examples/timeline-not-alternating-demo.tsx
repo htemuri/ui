@@ -6,27 +6,27 @@ import Timeline, {
 const timelineData = [
   {
     title: "Project Kickoff",
-    variant: "default" as const // Blue/Gray border (Standard)
+    variant: "default" as const
   },
   {
     title: "Research Phase",
-    variant: "info" as const // Blue (Informational)
+    variant: "secondary" as const
   },
   {
     title: "Prototype Approval",
-    variant: "success" as const // Green (Milestone reached)
+    variant: "default" as const
   },
   {
     title: "Unexpected API Delays",
-    variant: "warning" as const // Amber (Caution)
+    variant: "secondary" as const
   },
   {
     title: "Critical Database Failure",
-    variant: "destructive" as const // Red (Problem)
+    variant: "default" as const
   },
   {
     title: "Beta Launch",
-    variant: "success" as const // Green (Completion)
+    variant: "secondary" as const
   }
 ];
 

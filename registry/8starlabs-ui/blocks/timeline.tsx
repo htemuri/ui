@@ -16,27 +16,56 @@ import {
 import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
+// CSS VARIANTS
+
+// Dot in the center of the timeline item
 const timelineDotVariants = cva(
-  "h-4 w-4 rounded-full z-10 box-border flex items-center justify-center ring-offset-background",
+  "relative h-4 w-4 rounded-full z-10 flex items-center justify-center",
   {
     variants: {
       variant: {
-        default: "bg-primary border-2 border-primary text-primary-foreground",
-        secondary:
-          "bg-secondary border-2 border-secondary text-secondary-foreground",
-        destructive:
-          "bg-destructive border-2 border-destructive text-destructive-foreground",
-        outline: "bg-background border-2 border-input"
+        default: "border-primary",
+        secondary: "border-secondary",
+        destructive: "border-destructive",
+        outline: "border-input"
+      },
+      hollow: {
+        true: "border-2 bg-card",
+        false: "border-2"
       }
     },
+    compoundVariants: [
+      {
+        hollow: false,
+        variant: "default",
+        class: "bg-primary"
+      },
+      {
+        hollow: false,
+        variant: "secondary",
+        class: "bg-secondary"
+      },
+      {
+        hollow: false,
+        variant: "destructive",
+        class: "bg-destructive"
+      },
+      {
+        hollow: false,
+        variant: "outline",
+        class: "bg-input"
+      }
+    ],
     defaultVariants: {
-      variant: "default"
+      variant: "default",
+      hollow: false
     }
   }
 );
 
+// Card container
 const timelineItemVariants = cva(
-  "flex flex-col rounded-md transition-all p-4",
+  "flex flex-col rounded-md transition-all p-4 shrink-0",
   {
     variants: {
       variant: {
@@ -47,7 +76,7 @@ const timelineItemVariants = cva(
         outline: "bg-transparent border shadow-sm"
       },
       noCards: {
-        true: "border-none shadow-none bg-transparent p-0",
+        true: "border-none shadow-none bg-transparent",
         false: ""
       }
     },
@@ -58,15 +87,14 @@ const timelineItemVariants = cva(
   }
 );
 
-// We need a specific variant for the lines because "outline"
-// shouldn't make the connecting line invisible.
+// Branch connecting dot to card
 const timelineBranchVariants = cva("absolute z-0", {
   variants: {
     variant: {
       default: "bg-primary",
-      secondary: "bg-muted-foreground/30", // Gentle gray for secondary
+      secondary: "bg-secondary",
       destructive: "bg-destructive",
-      outline: "bg-border" // Matches standard border color
+      outline: "bg-border"
     }
   },
   defaultVariants: {
@@ -74,6 +102,7 @@ const timelineBranchVariants = cva("absolute z-0", {
   }
 });
 
+// Timeline layout container
 const timelineLayoutVariants = cva("grid relative", {
   variants: {
     orientation: {
@@ -86,7 +115,8 @@ const timelineLayoutVariants = cva("grid relative", {
   }
 });
 
-const timelineItemContainerVariants = cva("flex relative", {
+// Timeline item container (card + dot + line + branch)
+const timelineItemContainerVariants = cva("flex relative snap-center", {
   variants: {
     orientation: {
       horizontal: "w-full justify-center",
@@ -105,12 +135,17 @@ const timelineItemContainerVariants = cva("flex relative", {
   ]
 });
 
+// EXPORTED INTERFACES AND COMPONENTS
 export interface TimelineItemProps
   extends
     HTMLAttributes<HTMLLIElement>,
     VariantProps<typeof timelineItemVariants> {
-  index?: number;
+  hollow?: boolean;
 }
+
+type _timelineItemProps = TimelineItemProps & {
+  index?: number | null;
+};
 
 export interface TimelineProps
   extends
@@ -150,8 +185,8 @@ export interface TimelineItemDescriptionProps extends HTMLAttributes<HTMLParagra
 type TimelineContextType = {
   orientation: "horizontal" | "vertical";
   total: number;
-  cardWidth?: number;
-  maxCardWidth?: number;
+  cardWidth: number;
+  maxCardWidth: number;
   alternating: boolean;
   alignment: "top/left" | "bottom/right";
   noCards: boolean;
@@ -280,6 +315,9 @@ export default function Timeline({
         className
       )}
       ref={isVertical ? null : scrollRef}
+      role="list"
+      aria-orientation={orientation}
+      aria-label="Timeline"
       {...props}
     >
       <ul
@@ -322,35 +360,12 @@ export default function Timeline({
   );
 }
 
-export function TimelineItem({
-  children,
-  className,
-  variant,
-  index = 0,
-  ...props
-}: TimelineItemProps) {
-  const {
-    orientation,
-    total,
-    cardWidth,
-    maxCardWidth,
-    alternating,
-    alignment,
-    noCards
-  } = useTimelineContext();
-
-  const isEven = index % 2 === 0;
-  const isVertical = orientation === "vertical";
-
-  // Determine "side" based on index
-  const side = alternating
-    ? isEven
-      ? "before"
-      : "after"
-    : alignment === "top/left"
-      ? "before"
-      : "after";
-
+function getGridAndLineStyles(
+  side: "before" | "after",
+  index: number,
+  isVertical: boolean,
+  alternating: boolean
+): { gridStyle: CSSProperties; lineStyle: CSSProperties } {
   let gridStyle: CSSProperties = {};
   let lineStyle: CSSProperties = {};
 
@@ -394,7 +409,15 @@ export function TimelineItem({
     }
   }
 
-  const cardStyle: CSSProperties = isVertical
+  return { gridStyle, lineStyle };
+}
+
+function getCardStyle(
+  isVertical: boolean,
+  cardWidth: number,
+  maxCardWidth: number
+): CSSProperties {
+  return isVertical
     ? {
         maxWidth: `${maxCardWidth}px`
       }
@@ -403,23 +426,87 @@ export function TimelineItem({
         minWidth: `${cardWidth}px`,
         maxWidth: `${cardWidth}px`
       };
+}
+
+function getBranchStyle(
+  isVertical: boolean,
+  isEven: boolean,
+  alternating: boolean,
+  alignment: "top/left" | "bottom/right"
+): string {
+  return isVertical
+    ? alternating
+      ? isEven
+        ? "h-px w-4 left-0"
+        : "h-px w-4 right-0"
+      : alignment === "top/left"
+        ? "h-px w-4 left-0"
+        : "h-px w-4 right-0"
+    : alternating
+      ? isEven
+        ? "w-px h-4 top-0"
+        : "w-px h-4 bottom-0"
+      : alignment === "top/left"
+        ? "w-px h-4 top-0"
+        : "w-px h-4 bottom-0";
+}
+
+export function TimelineItem({
+  children,
+  className,
+  variant,
+  hollow = false,
+  index = null,
+  ...props
+}: _timelineItemProps) {
+  if (index == null) {
+    throw new Error("TimelineItem must be used as a direct child of Timeline.");
+  }
+
+  const {
+    orientation,
+    total,
+    cardWidth,
+    maxCardWidth,
+    alternating,
+    alignment,
+    noCards
+  } = useTimelineContext();
+
+  const isEven = index % 2 === 0;
+  const isVertical = orientation === "vertical";
+
+  // Determine "side" based on index
+  const side = alternating
+    ? isEven
+      ? "before"
+      : "after"
+    : alignment === "top/left"
+      ? "before"
+      : "after";
+
+  const { gridStyle, lineStyle } = getGridAndLineStyles(
+    side,
+    index,
+    isVertical,
+    alternating
+  );
 
   return (
     <>
       <li
         id={`timeline-item-${index}-container`}
-        className={cn(
-          timelineItemContainerVariants({ orientation, side }),
-          "snap-center",
-          className
-        )}
+        className={cn(timelineItemContainerVariants({ orientation, side }))}
         style={gridStyle}
+        role="listitem"
+        aria-posinset={index + 1}
+        aria-setsize={total}
         {...props}
       >
         <div
           id={`timeline-item-${index}`}
-          style={cardStyle}
-          className={cn(timelineItemVariants({ variant, noCards }), "shrink-0")}
+          style={getCardStyle(isVertical, cardWidth, maxCardWidth)}
+          className={cn(timelineItemVariants({ variant, noCards }), className)}
           data-timeline-card={true}
         >
           {children}
@@ -447,34 +534,22 @@ export function TimelineItem({
             isVertical ? "h-full w-1" : "w-full h-1"
           )}
           id={`timeline-item-${index}-line`}
+          aria-hidden="true"
         />
 
         <div
           className={cn(
-            "absolute",
             timelineBranchVariants({ variant }),
-            isVertical
-              ? alternating
-                ? isEven
-                  ? "h-px w-4 left-0"
-                  : "h-px w-4 right-0"
-                : alignment === "top/left"
-                  ? "h-px w-4 left-0"
-                  : "h-px w-4 right-0"
-              : alternating
-                ? isEven
-                  ? "w-px h-4 top-0"
-                  : "w-px h-4 bottom-0"
-                : alignment === "top/left"
-                  ? "w-px h-4 top-0"
-                  : "w-px h-4 bottom-0"
+            getBranchStyle(isVertical, isEven, alternating, alignment)
           )}
           id={`timeline-item-${index}-branch`}
+          aria-hidden="true"
         />
 
         <div
-          className={cn(timelineDotVariants({ variant }))}
+          className={cn(timelineDotVariants({ variant, hollow }))}
           id={`timeline-item-${index}-dot`}
+          aria-hidden="true"
         />
       </li>
     </>
@@ -491,7 +566,13 @@ export function TimelineItemDate({
       className={cn("text-xs text-muted-foreground mb-1", className)}
       {...props}
     >
-      {children instanceof Date ? dateFormatter.format(children) : children}
+      {children instanceof Date ? (
+        <time dateTime={children.toISOString()}>
+          {dateFormatter.format(children)}
+        </time>
+      ) : (
+        children
+      )}
     </span>
   );
 }
