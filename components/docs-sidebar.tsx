@@ -37,7 +37,7 @@ export function DocsSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & { tree: typeof source.pageTree }) {
   const pathname = usePathname();
-  console.log(tree.children);
+
   return (
     <Sidebar
       className="sticky top-[calc(var(--header-height)+1px)] z-30 hidden h-[calc(100svh-var(--footer-height)-4rem)] overscroll-none bg-transparent lg:flex"
@@ -79,7 +79,9 @@ export function DocsSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
         {tree.children.map((item) => {
-          if (EXCLUDED_SECTIONS.includes(item.$id ?? "")) {
+          if (
+            EXCLUDED_SECTIONS.includes(item.$id?.replace(/^root:/, "") ?? "")
+          ) {
             return null;
           }
 
