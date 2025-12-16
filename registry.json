@@ -110,6 +110,78 @@
           "type": "registry:example"
         }
       ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline component",
+      "description": "A timeline component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/blocks/timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "timeline-demo",
+      "type": "registry:example",
+      "title": "Timeline demo",
+      "description": "A timeline demo component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/examples/timeline-demo.tsx",
+          "type": "registry:example"
+        }
+      ]
+    },
+    {
+      "name": "timeline-hollow-demo",
+      "type": "registry:example",
+      "title": "Timeline hollow demo",
+      "description": "A timeline hollow demo component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/examples/timeline-hollow-demo.tsx",
+          "type": "registry:example"
+        }
+      ]
+    },
+    {
+      "name": "timeline-nocards-demo",
+      "type": "registry:example",
+      "title": "Timeline no cards demo",
+      "description": "A timeline no cards demo component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/examples/timeline-nocards-demo.tsx",
+          "type": "registry:example"
+        }
+      ]
+    },
+    {
+      "name": "timeline-not-alternating-demo",
+      "type": "registry:example",
+      "title": "Timeline not alternating demo",
+      "description": "A timeline not alternating demo component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/examples/timeline-not-alternating-demo.tsx",
+          "type": "registry:example"
+        }
+      ]
+    },
+    {
+      "name": "timeline-vertical-demo",
+      "type": "registry:example",
+      "title": "Timeline vertical demo",
+      "description": "A timeline vertical demo component",
+      "files": [
+        {
+          "path": "registry/8starlabs-ui/examples/timeline-vertical-demo.tsx",
+          "type": "registry:example"
+        }
+      ]
     }
   ]
 }

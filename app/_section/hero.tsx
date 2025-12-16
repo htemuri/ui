@@ -32,13 +32,15 @@ const Hero = ({ className }: HeroProps) => {
 
   return (
     <div className={cn("flex flex-col w-full items-center gap-2", className)}>
-      {/* <Badge variant="secondary" className="bg-transparent">
-        <span
-          className="flex size-2 rounded-full bg-blue-500"
-          title="Coming soon"
-        />
-        Coming soon!
-      </Badge> */}
+      <Badge variant="secondary" className="bg-transparent" asChild>
+        <Link href="/docs/components/timeline">
+          <span
+            className="flex size-2 rounded-full bg-blue-500"
+            title="Coming soon"
+          />
+          New: Timeline component launched!
+        </Link>
+      </Badge>
       {logo}
       <p className="text-md max-w-3xl text-center">
         A set of beautifully designed components designed for developers who

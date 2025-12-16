@@ -66,7 +66,7 @@ export function MyTimeline() {
 
 ## API Reference
 
-### `<Timeline />`
+### Timeline
 
 | Prop               | Type                           | Default        | Description                                                                                          |
 | ------------------ | ------------------------------ | -------------- | ---------------------------------------------------------------------------------------------------- |
@@ -79,22 +79,22 @@ export function MyTimeline() {
 | `vertItemMaxWidth` | `number`                       | `350`          | Maximum width in pixels for cards in vertical timelines.                                             |
 | `noCards`          | `boolean`                      | `false`        | Removes card background, border, and padding styles.                                                 |
 
-### `<TimelineItem />`
+### TimelineItem
 
-| Prop      | Type                                                     | Description                                                     |
-| --------- | -------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `variant` | `"default" \| "secondary" \| "destructive" \| "outline"` | Visual variant applied to the card, dot, and connecting branch. |
-| `hollow`  | `boolean`                                                | `false`                                                         | Renders the timeline dot as a hollow circle instead of a solid one. |
+| Prop      | Type                                                     | Default   | Description                                                         |
+| --------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------------- |
+| `variant` | `"default" \| "secondary" \| "destructive" \| "outline"` | `default` | Visual variant applied to the card, dot, and connecting branch.     |
+| `hollow`  | `boolean`                                                | `false`   | Renders the timeline dot as a hollow circle instead of a solid one. |
 
-### `<TimelineItemDate />`
+### TimelineItemDate
 
 Displays a formatted date or string. Accepts either a `Date` object or a string.
 
-### `<TimelineItemTitle />`
+### TimelineItemTitle
 
 Displays the main title of a timeline event.
 
-### `<TimelineItemDescription />`
+### TimelineItemDescription
 
 Displays supporting text for a timeline event.
 
