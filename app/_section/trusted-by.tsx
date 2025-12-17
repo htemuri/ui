@@ -6,6 +6,7 @@ interface Organization {
   logo: string;
   alt: string;
   url: string;
+  utm: Record<string, any>;
 }
 
 interface TrustedByProps {
@@ -17,7 +18,12 @@ const organizations: Organization[] = [
     name: "Oikova",
     logo: "/svgs/oikova_logo_light.svg",
     alt: "Oikova Logo",
-    url: "https://oikova.com"
+    url: "https://oikova.com",
+    utm: {
+      utm_source: "ui.8starlabs.com",
+      utm_medium: "referral",
+      utm_campaign: "8sl_ui_trusted_by"
+    }
   }
   // Add more Organization here later
 ];
@@ -30,7 +36,7 @@ const TrustedBy = ({ className }: TrustedByProps) => {
         {organizations.map((organization) => (
           <Link
             key={organization.name}
-            href={organization.url}
+            href={`${organization.url}?${new URLSearchParams(organization.utm).toString()}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center px-8 py-2 bg-background/50 hover:bg-background/80 transition-colors rounded-lg group cursor-pointer"
