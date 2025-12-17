@@ -35,6 +35,7 @@ const TrustedBy = ({ className }: TrustedByProps) => {
       <div className="flex items-center justify-center flex-wrap gap-4">
         {organizations.map((organization) => (
           <Link
+            prefetch={false}
             key={organization.name}
             href={`${organization.url}?${new URLSearchParams(organization.utm).toString()}`}
             target="_blank"

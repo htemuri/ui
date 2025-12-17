@@ -32,6 +32,7 @@ export function MainNav({
         ) : (
           <Button key={item.href} variant="ghost" asChild size="sm">
             <Link
+              prefetch={false}
               href={item.href}
               className={cn(pathname === item.href && "text-primary")}
             >

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Icons } from "@/components/icons";
 import { siteConfig, api } from "@/lib/config";
@@ -10,7 +10,12 @@ import { Skeleton } from "@/registry/8starlabs-ui/ui/skeleton";
 export function GitHubLink() {
   return (
     <Button asChild size="sm" variant="ghost" className="h-8 shadow-none">
-      <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
+      <Link
+        prefetch={false}
+        href={siteConfig.links.github}
+        target="_blank"
+        rel="noreferrer"
+      >
         <Icons.gitHub />
         <StarsCountClient />
       </Link>

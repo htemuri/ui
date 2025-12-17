@@ -6,7 +6,7 @@ type Props = {};
 
 const StatusIndicatorCard = (props: Props) => {
   return (
-    <Link href="/docs/components/status-indicator">
+    <Link prefetch={false} href="/docs/components/status-indicator">
       <Card className="size-full px-6 group relative overflow-hidden hover:bg-muted/20 transition-colors">
         <div className="flex flex-col gap-4">
           <div>

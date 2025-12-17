@@ -33,7 +33,7 @@ const Hero = ({ className }: HeroProps) => {
   return (
     <div className={cn("flex flex-col w-full items-center gap-2", className)}>
       <Badge variant="secondary" className="bg-transparent" asChild>
-        <Link href="/docs/components/timeline">
+        <Link prefetch={false} href="/docs/components/timeline">
           <span
             className="flex size-2 rounded-full bg-blue-500"
             title="Coming soon"
@@ -49,10 +49,14 @@ const Hero = ({ className }: HeroProps) => {
       </p>
       <div className="flex gap-2">
         <Button asChild size="sm">
-          <Link href="/docs">Get Started</Link>
+          <Link prefetch={false} href="/docs">
+            Get Started
+          </Link>
         </Button>
         <Button asChild size="sm" variant="ghost">
-          <Link href="/docs/components">View Components</Link>
+          <Link prefetch={false} href="/docs/components">
+            View Components
+          </Link>
         </Button>
       </div>
     </div>

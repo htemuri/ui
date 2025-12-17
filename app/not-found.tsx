@@ -18,7 +18,9 @@ export default function NotFound() {
           This page could not be found.
         </p>
         <Button asChild>
-          <Link href="/">Go home</Link>
+          <Link prefetch={false} href="/">
+            Go home
+          </Link>
         </Button>
       </div>
     </div>

@@ -127,7 +127,7 @@ export default async function Page(props: {
                       className="extend-touch-target ml-auto size-8 shadow-none md:size-7"
                       asChild
                     >
-                      <Link href={neighbours.previous.url}>
+                      <Link prefetch={false} href={neighbours.previous.url}>
                         <IconArrowLeft />
                         <span className="sr-only">Previous</span>
                       </Link>
@@ -140,7 +140,7 @@ export default async function Page(props: {
                       className="extend-touch-target size-8 shadow-none md:size-7"
                       asChild
                     >
-                      <Link href={neighbours.next.url}>
+                      <Link prefetch={false} href={neighbours.next.url}>
                         <span className="sr-only">Next</span>
                         <IconArrowRight />
                       </Link>
@@ -185,7 +185,7 @@ export default async function Page(props: {
               asChild
               className="shadow-none"
             >
-              <Link href={neighbours.previous.url}>
+              <Link prefetch={false} href={neighbours.previous.url}>
                 <IconArrowLeft /> {neighbours.previous.name}
               </Link>
             </Button>
@@ -197,7 +197,7 @@ export default async function Page(props: {
               className="ml-auto shadow-none"
               asChild
             >
-              <Link href={neighbours.next.url}>
+              <Link prefetch={false} href={neighbours.next.url}>
                 {neighbours.next.name} <IconArrowRight />
               </Link>
             </Button>

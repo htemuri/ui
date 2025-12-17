@@ -150,6 +150,7 @@ function MobileLink({
   const router = useRouter();
   return (
     <Link
+      prefetch={false}
       href={href}
       onClick={() => {
         router.push(href.toString());

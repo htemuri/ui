@@ -45,7 +45,7 @@ export function SiteHeader({ tree }: { tree: typeof source.pageTree }) {
           size="icon"
           className="hidden size-8 lg:flex"
         >
-          <Link href="/">
+          <Link prefetch={false} href="/">
             {logo}
             <span className="sr-only">{siteConfig.name}</span>
           </Link>

@@ -3,6 +3,14 @@ import { createMDX } from "fumadocs-mdx/next";
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: false,
+  headers: async () => [
+    {
+      source: "/favicon.ico",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=2592000, immutable" }
+      ]
+    }
+  ],
   compiler: {
     removeConsole:
       process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false

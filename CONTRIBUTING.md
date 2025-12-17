@@ -83,7 +83,7 @@ This repository is a monorepo.
    - Test your components thoroughly
 
 4. **Update the Registry**
-   After developing or updating any registry items (such as blocks or examples), run `npm run registry:build` to ensure the registry is up to date and your changes can be installed properly.
+   After developing or updating any registry items (such as blocks or examples), update the root `registry.json` and run `npm run registry:build` to ensure the registry is up to date and your changes can be installed properly.
 
    If you’ve added a new registry item, please also run `npm run registry:generate-index` to update the `__index__.tsx` file.
 

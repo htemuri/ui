@@ -4,7 +4,7 @@ import { Card } from "@/registry/8starlabs-ui/ui/card";
 
 const TransportBadgeCard = () => {
   return (
-    <Link href="/docs/components/transport-badge">
+    <Link prefetch={false} href="/docs/components/transport-badge">
       <Card className="size-full px-6 group relative overflow-hidden hover:bg-muted/20 transition-colors">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
