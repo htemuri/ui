@@ -82,7 +82,12 @@ This repository is a monorepo.
    - Add necessary comments for complex logic
    - Test your components thoroughly
 
-4. **Commit Guidelines**
+4. **Update the Registry**
+   After developing or updating any registry items (such as blocks or examples), run `npm run registry:build` to ensure the registry is up to date and your changes can be installed properly.
+
+   If you’ve added a new registry item, please also run `npm run registry:generate-index` to update the `__index__.tsx` file.
+
+5. **Commit Guidelines**
    We follow conventional commit messages:
 
 - `feat:` - New features
@@ -93,13 +98,13 @@ This repository is a monorepo.
 
 Example: `git commit -m 'feat: add new Button variant'`
 
-5. **Push your branch**
+6. **Push your branch**
 
    ```bash
    git push origin <username>/<your-feature-name>
    ```
 
-6. **Open a Pull Request (PR)**
+7. **Open a Pull Request (PR)**
    Go to your fork on GitHub and click “Compare & pull request”.
 
 Please include:
