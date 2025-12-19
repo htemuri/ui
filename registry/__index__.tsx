@@ -1,8 +1,10 @@
 // AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
+import scroll_fade_component from "@/registry/8starlabs-ui/blocks/scroll-fade";
 import status_indicator_component from "@/registry/8starlabs-ui/blocks/status-indicator";
 import system_banner_component from "@/registry/8starlabs-ui/blocks/system-banner";
 import timeline_component from "@/registry/8starlabs-ui/blocks/timeline";
 import transport_badge_component from "@/registry/8starlabs-ui/blocks/transport-badge";
+import scroll_fade_demo_component from "@/registry/8starlabs-ui/examples/scroll-fade-demo";
 import status_indicator_demo_component from "@/registry/8starlabs-ui/examples/status-indicator-demo";
 import timeline_demo_component from "@/registry/8starlabs-ui/examples/timeline-demo";
 import timeline_hollow_demo_component from "@/registry/8starlabs-ui/examples/timeline-hollow-demo";
@@ -18,6 +20,16 @@ import transport_badge_demo_component from "@/registry/8starlabs-ui/examples/tra
 
 export const Index: Record<string, any> = {
   "8starlabs-ui": {
+    "scroll-fade": {
+      name: "scroll-fade",
+      type: "registry:block",
+      files: [{
+        path: "registry/8starlabs-ui/blocks/scroll-fade.tsx",
+        type: "registry:block",
+        target: ""
+      }],
+      component: scroll_fade_component
+    },
     "status-indicator": {
       name: "status-indicator",
       type: "registry:block",
@@ -57,6 +69,16 @@ export const Index: Record<string, any> = {
         target: ""
       }],
       component: transport_badge_component
+    },
+    "scroll-fade-demo": {
+      name: "scroll-fade-demo",
+      type: "registry:example",
+      files: [{
+        path: "registry/8starlabs-ui/examples/scroll-fade-demo.tsx",
+        type: "registry:example",
+        target: ""
+      }],
+      component: scroll_fade_demo_component
     },
     "status-indicator-demo": {
       name: "status-indicator-demo",

@@ -32,6 +32,7 @@ import {
   TabsList,
   TabsTrigger
 } from "@/registry/8starlabs-ui/ui/tabs";
+import ScrollFade from "@/registry/8starlabs-ui/blocks/scroll-fade";
 
 export const mdxComponents = {
   h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -134,13 +135,15 @@ export const mdxComponents = {
   ),
   table: ({ className, ...props }: React.ComponentProps<"table">) => (
     <div className="my-6 w-full overflow-y-auto">
-      <table
-        className={cn(
-          "relative w-full overflow-hidden border-none text-sm",
-          className
-        )}
-        {...props}
-      />
+      <ScrollFade>
+        <table
+          className={cn(
+            "relative w-full overflow-hidden border-none text-sm",
+            className
+          )}
+          {...props}
+        />
+      </ScrollFade>
     </div>
   ),
   tr: ({ className, ...props }: React.ComponentProps<"tr">) => (

@@ -39,6 +39,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8
     },
     {
+      url: "https://ui.8starlabs.com/docs/components/scroll-fade",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7
+    },
+    {
       url: "https://ui.8starlabs.com/docs/components/status-indicator",
       lastModified: new Date(),
       changeFrequency: "monthly",
