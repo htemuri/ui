@@ -48,9 +48,7 @@ const CommandMenu = ({ tree, ...props }: { tree: typeof source.pageTree }) => {
       if (isComponent) {
         const componentName = item.url.split("/").pop();
         setSelectedType("component");
-        setCopyPayload(
-          `${packageManager} shadcn@latest add @8starlabs-ui/${componentName}`
-        );
+        setCopyPayload(`npx shadcn@latest add @8starlabs-ui/${componentName}`);
       } else {
         setSelectedType("page");
         setCopyPayload("");
