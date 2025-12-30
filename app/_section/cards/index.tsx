@@ -3,6 +3,7 @@ import StatusIndicatorCard from "./status-indicator-card";
 import TransportBadgeCard from "./transport-badge-card";
 import TimelineCard from "./timeline-card";
 import FlipClockCard from "./flip-clock-card";
+import PartitionBarCard from "./partition-bar-card";
 
 interface CardsProps {
   className?: string;
@@ -27,6 +28,9 @@ const Cards = ({ className }: CardsProps) => {
       </div>
       <div className="sm:col-span-2 xl:col-span-2 xl:col-start-2">
         <FlipClockCard />
+      </div>
+      <div className="sm:col-span-2 xl:col-span-2 xl:col-start-2">
+        <PartitionBarCard />
       </div>
     </div>
   );
