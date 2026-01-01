@@ -310,7 +310,7 @@ export default function Heatmap(props: HeatmapProps) {
       aria-label="Activity Heatmap"
       style={{
         gap,
-        gridTemplateColumns: `auto repeat(${weeks.length}, ${cellSize}px)`,
+        gridTemplateColumns: `max-content repeat(${weeks.length}, ${cellSize}px)`,
         gridTemplateRows: `repeat(8, ${cellSize}px)`
       }}
       {...(htmlProps as HTMLAttributes<HTMLDivElement>)}
@@ -321,7 +321,7 @@ export default function Heatmap(props: HeatmapProps) {
         <div
           key={`header-${i}`}
           style={{ gridColumn: i + 2, gridRow: 1, fontSize }}
-          className="text-muted-foreground"
+          className="text-muted-foreground flex items-end"
         >
           {monthLabels[i]}
         </div>
