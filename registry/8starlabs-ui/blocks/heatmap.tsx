@@ -29,7 +29,7 @@ type ColorOptions =
   | {
       colorMode: "interpolate";
       maxColor?: string;
-      zeroValueColor?: string;
+      minColor?: string;
       interpolation?: InterpolationModes;
     };
 
@@ -46,38 +46,46 @@ type HeatmapProps = HTMLAttributes<HTMLDivElement> &
     valueDisplayFunction?: (value: number) => ReactNode;
   };
 
-function getAllDays(start: Date, end: Date): Date[] {
-  // Generate all dates between start and end, inclusive
-  const days = [];
-  const curr = new Date(start);
-  while (curr <= end) {
-    days.push(new Date(curr));
+function getAllDays(start: string, end: string): string[] {
+  // Generate all days between start and end dates (inclusive)
+  const days: string[] = [];
+  let curr = new Date(start + "T00:00:00");
+
+  const endDate = new Date(end + "T00:00:00");
+
+  while (curr <= endDate) {
+    days.push(curr.toISOString().slice(0, 10));
     curr.setDate(curr.getDate() + 1);
   }
+
   return days;
 }
 
-function padToWeekStart(days: Date[]): (Date | null)[] {
-  // Pad the beginning of the array with nulls so that the first day starts on the correct weekday
-  // eg. if the first day is a Wednesday, add three nulls for Sun, Mon, Tue
-  const firstDay = days[0].getDay(); // 0 = Sunday
+function padToWeekStart(days: string[]): (string | null)[] {
+  // Pad the start of the days array with nulls to align to week start (Sunday)
+  // eg. if first day is Wednesday (3), add 3 nulls at start
+  const firstDay = new Date(days[0] + "T00:00:00").getDay();
   const padding = new Array(firstDay).fill(null);
   return [...padding, ...days];
 }
 
-function chunkByWeek(days: (Date | null)[]): (Date | null)[][] {
+function chunkByWeek(days: (string | null)[]): (string | null)[][] {
   // Chunk the days into weeks (arrays of 7 days)
-  const weeks: (Date | null)[][] = [];
+  const weeks: (string | null)[][] = [];
   for (let i = 0; i < days.length; i += 7) {
     weeks.push(days.slice(i, i + 7));
   }
   return weeks;
 }
 
-function getMonthLabel(week: (Date | null)[]) {
-  // Get the month label for the week (based on the LAST day)
-  const lastDay = week.slice().reverse().find(Boolean);
-  return lastDay ? lastDay.toLocaleString("default", { month: "short" }) : null;
+function getMonthLabel(week: (string | null)[]) {
+  // Get month label for the week (based on last non-null day)
+  const lastDay = [...week].reverse().find(Boolean);
+  return !lastDay
+    ? null
+    : new Date(lastDay + "T00:00:00").toLocaleString("default", {
+        month: "short"
+      });
 }
 
 function defaultColourMap(value: number, max: number, colorCount: number) {
@@ -89,31 +97,46 @@ function defaultColourMap(value: number, max: number, colorCount: number) {
   return Math.min(Math.max(index, 0), colorCount - 1);
 }
 
-function interpolateColor(
+function interpolateRgb(
   value: number,
   max: number,
+  minColor: string,
   maxColor: string,
-  zeroValueColor: string,
   scale: InterpolationModes
-): string {
-  // Interpolate color from zeroValueColor to maxColor based on value/max
-  if (value <= 0) return zeroValueColor;
+) {
+  if (value <= 0 || max <= 0) return minColor;
 
-  let ratio = value / max;
+  let t = value / max;
+
   switch (scale) {
     case "sqrt":
-      ratio = Math.sqrt(ratio);
+      t = Math.sqrt(t);
       break;
     case "log":
-      ratio = Math.log10(value + 1) / Math.log10(max + 1); // log scale
+      t = Math.log10(value + 1) / Math.log10(max + 1);
       break;
   }
 
-  const r = parseInt(maxColor.slice(1, 3), 16);
-  const g = parseInt(maxColor.slice(3, 5), 16);
-  const b = parseInt(maxColor.slice(5, 7), 16);
+  // Clamp t between 0 and 1
+  t = Math.min(Math.max(t, 0), 1);
 
-  return `rgba(${r}, ${g}, ${b}, ${ratio})`;
+  const s = {
+    r: parseInt(minColor.slice(1, 3), 16),
+    g: parseInt(minColor.slice(3, 5), 16),
+    b: parseInt(minColor.slice(5, 7), 16)
+  };
+
+  const e = {
+    r: parseInt(maxColor.slice(1, 3), 16),
+    g: parseInt(maxColor.slice(3, 5), 16),
+    b: parseInt(maxColor.slice(5, 7), 16)
+  };
+
+  const r = Math.round(s.r + (e.r - s.r) * t);
+  const g = Math.round(s.g + (e.g - s.g) * t);
+  const b = Math.round(s.b + (e.b - s.b) * t);
+
+  return `rgb(${r}, ${g}, ${b})`;
 }
 
 const defaultIntensityColours = [
@@ -187,20 +210,26 @@ function ValueIndicator({
     const minScale = 0.3;
     const scale = maxValue > 0 ? value / maxValue : 0;
     finalSize = cellSize * (minScale + (1 - minScale) * scale);
+
+    return (
+      <div
+        className="flex items-center justify-center"
+        style={{ width: cellSize, height: cellSize }}
+        {...htmlProps}
+      >
+        <div
+          className="transition-colors rounded-full"
+          style={{
+            width: finalSize,
+            height: finalSize,
+            backgroundColor: color
+          }}
+        />
+      </div>
+    );
   }
 
-  return displayStyle === "bubbles" ? (
-    <div
-      className="flex items-center justify-center"
-      style={{ width: cellSize, height: cellSize }}
-      {...htmlProps}
-    >
-      <div
-        className="transition-colors rounded-full"
-        style={{ width: finalSize, height: finalSize, backgroundColor: color }}
-      />
-    </div>
-  ) : (
+  return (
     <div
       className="transition-colors rounded-md"
       style={{
@@ -234,11 +263,14 @@ export default function Heatmap(props: HeatmapProps) {
     data.map(({ date, value }) => [date, value])
   );
 
-  const days = getAllDays(startDate, endDate);
+  const days = getAllDays(
+    startDate.toISOString().slice(0, 10),
+    endDate.toISOString().slice(0, 10)
+  );
   const paddedDays = padToWeekStart(days);
   const weeks = chunkByWeek(paddedDays);
 
-  const computedMax = Math.max(...data.map((d) => d.value), 1);
+  const maxValue = Math.max(...data.map((d) => d.value), 0);
 
   const monthLabels = weeks.map((week, i) => {
     const label = getMonthLabel(week);
@@ -248,11 +280,17 @@ export default function Heatmap(props: HeatmapProps) {
 
   const getCellColor = (value: number) => {
     if (colorMode === "interpolate") {
-      return interpolateColor(
+      if (value <= 0) {
+        return props.minColor ?? "var(--heatmap-zero)";
+      }
+
+      // value > 0
+      // interpolate between minColor and maxColor
+      return interpolateRgb(
         value,
-        computedMax,
-        props.maxColor ?? "#00ff00",
-        props.zeroValueColor ?? "#212735",
+        maxValue,
+        props.minColor ?? "#aceebb",
+        props.maxColor ?? "#116329",
         props.interpolation ?? "linear"
       );
     } else {
@@ -263,12 +301,14 @@ export default function Heatmap(props: HeatmapProps) {
 
       const map = props.customColorMap ?? defaultColourMap;
 
-      return colorArray[map(value, computedMax, colorArray.length)];
+      return colorArray[map(value, maxValue, colorArray.length)];
     }
   };
 
   return (
     <div
+      role="grid"
+      aria-label="Activity Heatmap"
       className={cn("flex", className)}
       style={{ gap }}
       {...(htmlProps as HTMLAttributes<HTMLDivElement>)}
@@ -296,7 +336,7 @@ export default function Heatmap(props: HeatmapProps) {
         <div className="flex" style={{ gap }}>
           <TooltipProvider>
             {weeks.map((week, i) => (
-              <div key={i} className="flex flex-col" style={{ gap }}>
+              <div key={i} className="flex flex-col" style={{ gap }} role="row">
                 {week.map((day, j) => {
                   if (!day) {
                     return (
@@ -307,20 +347,23 @@ export default function Heatmap(props: HeatmapProps) {
                     );
                   }
 
-                  const dateKey = day.toISOString().slice(0, 10);
-                  const thisDateValue = valueByDate.get(dateKey) ?? 0;
+                  const thisDateValue = valueByDate.get(day) ?? 0;
                   const safeValue = Math.max(0, thisDateValue);
                   const thisColor = getCellColor(safeValue);
+                  const dateForDisplay = new Date(day + "T00:00:00");
 
                   return (
                     <Tooltip key={j}>
                       <TooltipTrigger asChild>
                         <ValueIndicator
-                          id={`heatmap-cell-${dateKey}`}
+                          tabIndex={0}
+                          role="gridcell"
+                          aria-label={`${day}: ${safeValue} event${safeValue !== 1 ? "s" : ""}`}
+                          id={`heatmap-cell-${day}`}
                           cellSize={cellSize}
                           displayStyle={displayStyle}
                           value={safeValue}
-                          maxValue={computedMax}
+                          maxValue={maxValue}
                           color={thisColor}
                         />
                       </TooltipTrigger>
@@ -328,8 +371,8 @@ export default function Heatmap(props: HeatmapProps) {
                         <div className="text-xs">
                           <div>
                             {dateDisplayFunction
-                              ? dateDisplayFunction(day)
-                              : day.toDateString()}
+                              ? dateDisplayFunction(dateForDisplay)
+                              : dateForDisplay.toDateString()}
                           </div>
                           <div className="text-muted-foreground">
                             {valueDisplayFunction
