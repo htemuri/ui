@@ -8,6 +8,15 @@
       "type": "registry:ui",
       "title": "Heatmap",
       "description": "A heatmap component",
+      "registryDependencies": ["tooltip"],
+      "cssVars": {
+        "light": {
+          "heatmap-zero": "rgb(221, 221, 221)"
+        },
+        "dark": {
+          "heatmap-zero": "rgb(51, 51, 51)"
+        }
+      },
       "files": [
         {
           "path": "registry/8starlabs-ui/blocks/heatmap.tsx",
