@@ -33,13 +33,13 @@ const Hero = ({ className }: HeroProps) => {
 
   return (
     <div className={cn("flex flex-col w-full items-center gap-2", className)}>
-      <Snowfall snowflakeCount={67} />
+      {/* <Snowfall snowflakeCount={67} /> */}
       <Badge variant="secondary" className="bg-transparent">
         <span
           className="flex size-2 rounded-full bg-blue-500"
           title="Coming soon"
         />
-        Merry Christmas! 🎄
+        Happy 2026! New components and updates are on the way. 🤩
       </Badge>
       {/* <Badge variant="secondary" className="bg-transparent" asChild>
         <Link prefetch={false} href="/docs/components/timeline">
