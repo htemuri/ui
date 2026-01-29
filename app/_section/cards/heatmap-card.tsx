@@ -54,6 +54,7 @@ const HeatmapCard = () => {
               startDate={new Date("2025-01-01")}
               endDate={new Date("2025-06-30")}
               colorMode="interpolate"
+              className="justify-center"
             />
           </ScrollFade>
         </div>

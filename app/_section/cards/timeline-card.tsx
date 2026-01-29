@@ -66,7 +66,7 @@ const TimelineCard = (props: Props) => {
           </div>
 
           <ScrollFade axis="horizontal">
-            <Timeline orientation="horizontal">
+            <Timeline orientation="horizontal" className="flex justify-center">
               {timelineData.map((item, idx) => (
                 <TimelineItem key={idx} variant={item.variant}>
                   <TimelineItemDate>

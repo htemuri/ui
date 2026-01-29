@@ -39,7 +39,7 @@ const Hero = ({ className }: HeroProps) => {
           className="flex size-2 rounded-full bg-blue-500"
           title="Coming soon"
         />
-        Happy 2026! New components and updates are on the way. 🤩
+        Happy 2026! 🤩
       </Badge>
       {/* <Badge variant="secondary" className="bg-transparent" asChild>
         <Link prefetch={false} href="/docs/components/timeline">
