@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import Link from "next/link";
 
@@ -53,7 +54,7 @@ const TrustedBy = ({ className }: TrustedByProps) => {
             rel="noopener noreferrer"
             className="flex items-center justify-center px-8 py-2 bg-background/50 hover:bg-background/80 transition-colors rounded-lg group cursor-pointer"
           >
-            <Image
+            <img
               src={organization.logo}
               alt={organization.alt}
               width={180}
