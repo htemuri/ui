@@ -24,6 +24,17 @@ const organizations: Organization[] = [
       utm_medium: "referral",
       utm_campaign: "8sl_ui_trusted_by"
     }
+  },
+  {
+    name: "Resumify",
+    logo: "/svgs/resumify_logo.png",
+    alt: "Resumify Logo",
+    url: "https://resumify.org",
+    utm: {
+      utm_source: "ui.8starlabs.com",
+      utm_medium: "referral",
+      utm_campaign: "8sl_ui_trusted_by"
+    }
   }
   // Add more Organization here later
 ];
