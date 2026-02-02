@@ -59,7 +59,7 @@ const TrustedBy = ({ className }: TrustedByProps) => {
               alt={organization.alt}
               width={180}
               height={50}
-              className="grayscale hover:grayscale-0 transition-all duration-300"
+              className="grayscale dark:invert hover:grayscale-0 transition-all duration-300"
             />
           </Link>
         ))}
